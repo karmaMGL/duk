@@ -56,6 +56,31 @@ class DashboardController extends Controller
     {
         return view('dashboard.profile');
     }
+    public function examDynamic()
+    {
+        return view('exams.dynamic');
+    }
+    public function examStatic()
+    {
+        return view('exams.static');
+    }
+    public function sections()
+    {
+        $sections = [
+            [
+                'id'=> 1,
+                'name'=> 'Section 1',
+                'description'=> 'Description for Section 1',
+                'completedQuestions'=> 10,
+                'totalQuestions'=> 20,
+                'averageScore'=> 80,
+                'estimatedTime'=> '10 minutes',
+                'isCompleted'=> true,
+                'difficulty'=> 'Easy',
+            ],
+        ];
+        return view('sections.sections', compact('sections'));
+    }
 
     /**
      * Show the user's settings page.
@@ -67,6 +92,6 @@ class DashboardController extends Controller
         return view('dashboard.settings');
     }
     public function exams(){
-        return view('dashboard.exams');
+        return view('exams');
     }
 }

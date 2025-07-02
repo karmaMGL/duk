@@ -9,8 +9,32 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -67,7 +91,7 @@
                                 <i data-lucide="user" class="w-4 h-4"></i>
                             </button>
 
-                            <div x-show="open" 
+                            <div x-show="open"
                                  @click.away="open = false"
                                  x-transition:enter="transition ease-out duration-100"
                                  x-transition:enter-start="transform opacity-0 scale-95"
@@ -129,6 +153,41 @@
         </main>
     </div>
 
+    <!-- Toast Notifications Container -->
+    <div class="fixed bottom-4 right-4 z-50 space-y-3 w-80" id="toast-container">
+        <!-- Success Toast Template -->
+        <div id="success-toast" class="hidden items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-lg border border-green-200" role="alert">
+            <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+                <span class="sr-only">Success icon</span>
+            </div>
+            <div class="ml-3 text-sm font-normal">
+                <span class="font-semibold text-gray-900">Success!</span>
+                <span id="success-message">Operation completed successfully.</span>
+            </div>
+            <button type="button" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg p-1.5 hover:bg-gray-100 inline-flex h-8 w-8" onclick="this.parentElement.remove()">
+                <i data-lucide="x" class="w-5 h-5"></i>
+                <span class="sr-only">Close</span>
+            </button>
+        </div>
+
+        <!-- Error Toast Template -->
+        <div id="error-toast" class="hidden items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-lg border border-red-200" role="alert">
+            <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg">
+                <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                <span class="sr-only">Error icon</span>
+            </div>
+            <div class="ml-3 text-sm font-normal">
+                <span class="font-semibold text-gray-900">Error!</span>
+                <span id="error-message">An error occurred. Please try again.</span>
+            </div>
+            <button type="button" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg p-1.5 hover:bg-gray-100 inline-flex h-8 w-8" onclick="this.parentElement.remove()">
+                <i data-lucide="x" class="w-5 h-5"></i>
+                <span class="sr-only">Close</span>
+            </button>
+        </div>
+    </div>
+
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
@@ -137,6 +196,48 @@
         document.addEventListener('livewire:load', function() {
             lucide.createIcons();
         });
+
+        // Toast notification functions
+        function showToast(type, message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.getElementById(`${type}-toast`).cloneNode(true);
+
+            // Set the message
+            const messageElement = toast.querySelector(`#${type}-message`);
+            if (messageElement) {
+                messageElement.textContent = message;
+            }
+
+            // Make the toast visible
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+
+            // Add to container
+            container.prepend(toast);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+
+        // Make function available globally
+        window.showToast = showToast;
+
+        // Listen for toast events
+        document.addEventListener('toast', function(e) {
+            showToast(e.detail.type, e.detail.message);
+        });
+
+        // Check for session flash messages
+        @if (session('success'))
+            showToast('success', '{{ session('success') }}');
+        @endif
+
+        @if (session('error'))
+            showToast('error', '{{ session('error') }}');
+        @endif
     </script>
+    @stack('scripts')
 </body>
 </html>
