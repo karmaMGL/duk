@@ -1,18 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard</title>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="min-h-screen bg-gray-50">
+@extends('layouts.app')
+@section('title', 'Admin Dashboard')
 
-  <!-- Navigation -->
-  <nav class="bg-white shadow px-4 py-4">
-    <div class="text-xl font-bold text-gray-800">Navigation</div>
-  </nav>
+ @section('content')
 
   <div class="container mx-auto px-4 py-8">
     <!-- Header -->
@@ -232,9 +221,10 @@
       </div>
     </div>
   </div>
+@endsection
+@push('scripts')
+    <script>
+        lucide.createIcons();
+    </script>
+@endpush
 
-  <script>
-    lucide.createIcons();
-  </script>
-</body>
-</html>

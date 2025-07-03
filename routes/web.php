@@ -19,8 +19,8 @@ Route::middleware('guest')->group(function () {
     Route::get('auth/admin/login', [AuthController::class,'showAdminLoginForm'])->name('auth.admin.login');
     Route::post('auth/admin/login', [AuthController::class,'adminLogin'])->name('auth.admin.login.post');
 });
-Route::get('auth/admin/default', [AuthController::class,'adminDefault'])->name('auth.admin.default');
-Route::get('auth/admin/logout', [AuthController::class,'adminLogout'])->name('auth.admin.logout');
+Route::get('admin/default', [AuthController::class,'adminDefault'])->name('auth.admin.default');
+Route::get('admin/logout', [AuthController::class,'adminLogout'])->name('auth.admin.logout');
 // Logout Route (should be accessible when authenticated)
 Route::post('auth/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
@@ -41,10 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/exams/dynamic', [DashboardController::class, 'examDynamic'])->name('exams.dynamic');
     Route::get('/exams/static', [DashboardController::class, 'examStatic'])->name('exams.static');
     Route::get('/sections', [DashboardController::class, 'sections'])->name('sections');
-
-
-    Route::get('/sections', [DashboardController::class, 'sections'])->name('sections');
-
+    Route::get('/sections/{id}', [DashboardController::class,'sectionsItem'])->name('sections.item');
     // Study Guide
     Route::get('/study-guide', [DashboardController::class, 'studyGuide'])->name('study-guide');
 
@@ -57,7 +54,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::prefix('admin')->group(function () {
         Route::get('/dashboard', [adminController::class, 'index'])->name('admin.dashboard');
-
+        Route::get('/sections', [adminController::class, 'sections'])->name('admin.sections');
+        Route::get('/sections/{id}', [adminController::class,'sectionsItem'])->name('admin.sections.item');
         Route::prefix('questions')->group(function () {
             Route::get('/new', [adminController::class, 'newQuestion'])->name('admin.questions.new');
         });

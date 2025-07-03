@@ -11,4 +11,12 @@ class adminController extends Controller
     {
         return view("admin.dashboard.index");
     }
+    public function sections()
+    {
+        return view("admin.sections.index");
+    }
+    public function sectionsItem($id)
+    {
+        return view("admin.sections.item");
+    }
 }

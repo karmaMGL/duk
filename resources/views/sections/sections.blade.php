@@ -94,7 +94,7 @@
             </div>
 
             <!-- Button -->
-            <a href="{{ url('/sections/' . $section['id'] . '/questions') }}">
+            <a href="{{ url('/sections/' . $section['id'] ) }}">
               <button class="w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md border {{ $section['isCompleted'] ? 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50' : 'border-transparent bg-blue-600 text-white hover:bg-blue-700' }}">
                 <i data-lucide="play" class="w-4 h-4 mr-2"></i>
                 {{ $section['completedQuestions'] === 0 ? 'Start Practice' : ($section['isCompleted'] ? 'Review Questions' : 'Continue Practice') }}

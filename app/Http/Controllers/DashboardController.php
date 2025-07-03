@@ -34,7 +34,7 @@ class DashboardController extends Controller
      */
     public function roadSigns()
     {
-        return view('dashboard.road-signs');
+        return view('roadSigns.roadSigns');
     }
 
     /**
@@ -81,7 +81,9 @@ class DashboardController extends Controller
         ];
         return view('sections.sections', compact('sections'));
     }
-
+    public function sectionsItem($id){
+        return view('sections.item', compact('id'));
+    }
     /**
      * Show the user's settings page.
      *
