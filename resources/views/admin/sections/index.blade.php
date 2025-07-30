@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Admin Dashboard')
+@section('title', 'Admin sections')
 @section('content')
 <div class="px-4 sm:px-6 lg:px-8">
   <!-- Header -->

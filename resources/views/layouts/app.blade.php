@@ -165,7 +165,7 @@
                         <nav class="flex-1 px-4 py-6 space-y-2">
                             @php
                                 $navItems = [
-                                    ['href' => '/admin', 'label' => 'Dashboard'],
+                                    ['href' => '/admin/dashboard', 'label' => 'Dashboard'],
                                     ['href' => '/admin/sections', 'label' => 'Sections'],
                                     ['href' => '/admin/questions', 'label' => 'Questions'],
                                     ['href' => '/admin/static-exams', 'label' => 'Static Exams'],
@@ -192,8 +192,8 @@
             @endauth
 
             <!-- Page Content -->
-            <main class="py-6">
-                <div class="container mx-auto px-4">
+            <main class="py-6 w-full">
+                <div class="container mx-auto px-4 max">
                     @yield('content')
                 </div>
             </main>
