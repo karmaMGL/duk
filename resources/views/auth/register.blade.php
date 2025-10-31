@@ -12,7 +12,7 @@
     <nav class="bg-white shadow-sm">
         <div class="container mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
-                <a href="{{ route('welcome') }}" class="flex items-center space-x-2">
+                <a href="{{ route('home') }}" class="flex items-center space-x-2">
                     <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                         <i data-lucide="trophy" class="w-5 h-5 text-white"></i>
                     </div>

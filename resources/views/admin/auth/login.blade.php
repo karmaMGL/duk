@@ -33,7 +33,7 @@
                         <p class="text-gray-500 text-sm mt-1">Sign in to continue to DriveTest Pro</p>
                     </div>
 
-                    <form method="POST" action="{{ route('auth.login') }}" class="mt-8 space-y-6">
+                    <form method="POST" action="{{ route('auth.admin.login.post') }}" class="mt-8 space-y-6">
                         @csrf
                         <div class="space-y-4">
                             <div class="relative">

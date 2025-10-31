@@ -3,25 +3,85 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Section;  // Assuming you have Section model
+use App\Models\Question; // Assuming you have Question model
+use App\Models\Feedback; // Assuming you have Feedback model
+use App\Models\Discount; // Assuming you have Discount model
+use App\Models\Company;  // Assuming you have Company model
+use App\Models\User;
 
 class adminController extends Controller
 {
     //
     public function index()
     {
-        return view("admin.dashboard.index");
+        return view('welcome');
+
+        $stats = [
+            'sections' => Section::all()->count(),
+            'users' => User::all()->count(),
+            'questions' => Question::all()->count(),
+            'feedbacks' => Feedback::all()->count(),
+            'companies' => Company::all()->count(),
+        ];
+        $view = view("admin.dashboard.index", compact('stats'));
+
+        return view('layouts.app', compact('view'));
     }
-    public function sections()
+
+    public function sections(Request $request)
     {
-        return view("admin.sections.index");
+
+        $sections = Section::withCount('questions')->latest()->paginate(10);
+        if ($request->search) {
+            $sections = Section::withCount('questions')->where('name', 'like', '%' . $request->search . '%')->latest()->paginate(10);
+        }
+        $view = view("admin.sections.index", compact('sections'));
+        return view('layouts.app', compact('view'));
+    }
+    public function destroySection($id)
+    {
+        $section = Section::findOrFail($id);
+        $section->delete();
+
+        return redirect()->route('admin.sections')->with('success', 'Хэсгийн мэдээллийг устгалаа.');
     }
     public function sectionsItem($id)
     {
-        return view("admin.sections.item");
+        $section = Section::findOrFail($id);
+
+        return response()->json($section);
+    }
+    public function newSection()
+    {
+        return view("admin.sections.create");
+    }
+    public function storeSection(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'number' => 'required',
+            'status' => 'required',
+        ]);
+        if (Section::where('section_number', $request->number)->where('is_active', true)->exists()) {
+            return redirect()->route('admin.sections')->with('error', 'Хэсгийн дугаар аль хэдийн байна.');
+        }
+        Section::create([
+            'name' => $request->name,
+            'section_number' => $request->number,
+            'is_active' => $request->status === 'true' ? 1 : 0,
+            'created_userid' => auth()->user()->id,
+        ]);
+
+        return redirect()->route('admin.sections')->with('success', 'Хэсгийн мэдээллийг хадгаллаа.');
     }
     public function questions()
     {
-        return view("admin.questions.index");
+        $questions = Question::with(['section', 'answers'])
+            ->latest()
+            ->paginate(15);
+
+        return view("admin.questions.index", compact('questions'));
     }
     public function questionsItem($id)
     {
@@ -29,14 +89,29 @@ class adminController extends Controller
     }
     public function feedback()
     {
-        return view("admin.feedback.index");
+        $feedbacks = Feedback::with('user')
+            ->latest()
+            ->paginate(15);
+
+        return view("admin.feedback.index", compact('feedbacks'));
     }
     public function discount()
     {
-        return view("admin.discount.index");
+        $discounts = Discount::latest()->paginate(15);
+        return view("admin.discount.index", compact('discounts'));
     }
     public function company()
     {
-        return view("admin.company.index");
+        $companies = Company::withCount('users')
+            ->latest()
+            ->paginate(15);
+
+        return view("admin.company.index", compact('companies'));
+    }
+
+    public function newQuestion()
+    {
+        $sections = Section::all();
+        return view("admin.questions.create", compact('sections'));
     }
 }

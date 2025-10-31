@@ -157,7 +157,7 @@
                 </div>
             </div>
         </nav>
-        @auth('web')
+        @auth('admin')
             <div class="flex">
                 <!-- Sidebar -->
                 <aside class="w-64 bg-white border-r border-gray-200 hidden lg:block">

@@ -8,24 +8,35 @@ use Illuminate\Support\Facades\Route;
 // Welcome route
 Route::get('/', function () {
     return view('welcome');
-})->name('welcome');
+})->name('home');
 
-// Authentication Routes
-Route::middleware('guest')->group(function () {
+// Authentication Routes for regular users
+Route::middleware('guest:web')->group(function () {
     Route::get('auth/login', [AuthController::class, 'showLoginForm'])->name('auth.login');
     Route::post('auth/login', [AuthController::class, 'login']);
     Route::get('auth/register', [AuthController::class, 'showRegistrationForm'])->name('auth.register.page');
     Route::post('auth/register', [AuthController::class, 'register'])->name('auth.register');
-    Route::get('auth/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('auth.admin.login');
-    Route::post('auth/admin/login', [AuthController::class, 'adminLogin'])->name('auth.admin.login.post');
 });
-Route::get('admin/default', [AuthController::class, 'adminDefault'])->name('auth.admin.default');
-Route::get('admin/logout', [AuthController::class, 'adminLogout'])->name('auth.admin.logout');
-// Logout Route (should be accessible when authenticated)
+
+// Admin Authentication Routes
+Route::middleware('guest:admin')->group(function () {
+    Route::get('auth/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('auth.admin.login');
+    Route::post('auth/admin/login/submit', [AuthController::class, 'adminLogin'])->name('auth.admin.login.post');
+});
+
+// Logout Routes
 Route::post('auth/logout', [AuthController::class, 'logout'])
-    ->middleware('auth')
+    ->middleware('auth:web')
     ->name('logout');
-Route::get('/admin/dashboard', [adminController::class, 'index'])->name('admin.dashboard');
+
+Route::post('admin/logout', [AuthController::class, 'adminLogout'])
+    ->name('auth.admin.logout');
+
+// Admin Protected Routes
+Route::prefix('admin')->middleware('auth:admin')->group(function () {
+    Route::get('/dashboard', [adminController::class, 'index'])->name('admin.dashboard');
+    // Add other admin routes here
+});
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
@@ -56,12 +67,19 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [adminController::class, 'index'])->name('admin.dashboard');
         Route::get('/sections', [adminController::class, 'sections'])->name('admin.sections');
         Route::get('/sections/{id}', [adminController::class, 'sectionsItem'])->name('admin.sections.item');
+
+        Route::post('/sections', [adminController::class, 'storeSection'])->name('admin.sections.store');
+        Route::get('/sections/delete/{id}', [adminController::class, 'destroySection'])->name('admin.sections.destroy');
         Route::get('/questions', [adminController::class, 'questions'])->name('admin.questions');
+        Route::get('/questions/{id}', [adminController::class, 'questionsItem'])->name('admin.questions.item');
+        Route::get('/questions/new', [adminController::class, 'newQuestion'])->name('admin.questions.new');
+        Route::post('/questions', [adminController::class, 'storeQuestion'])->name('admin.questions.store');
         Route::get('/feedback', [adminController::class, 'feedback'])->name('admin.feedback');
         Route::get('/discounts', [adminController::class, 'discount'])->name('admin.discount');
+        Route::get('/discounts/new', [adminController::class, 'newDiscount'])->name('admin.discounts.new');
+        Route::post('/discounts', [adminController::class, 'storeDiscount'])->name('admin.discounts.store');
         Route::get('/companies', [adminController::class, 'company'])->name('admin.company');
-        Route::prefix('questions')->group(function () {
-            Route::get('/new', [adminController::class, 'newQuestion'])->name('admin.questions.new');
-        });
+        Route::get('/companies/new', [adminController::class, 'newCompany'])->name('admin.companies.new');
+        Route::post('/companies', [adminController::class, 'storeCompany'])->name('admin.companies.store');
     });
 });
