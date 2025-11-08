@@ -86,15 +86,38 @@
 
                     <!-- User Menu -->
                     <div class="flex items-center space-x-4">
-                        <span
-                            class="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                            Pro Plan
-                        </span>
 
+                        @if (auth()->user()->current_price_id == null)
+                            <span
+                                class="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                Free Plan
+                            </span>
+                        @elseif (auth()->user()->current_price_id != null)
+                            <span
+                                class="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                Pro Plan
+                            </span>
+                        @else
+                            <span
+                                class="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                Free Plan
+                            </span>
+                        @endif
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open"
                                 class="flex items-center justify-center h-8 w-8 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                <i data-lucide="user" class="w-4 h-4"></i>
+                                @php
+                                    $avatar = auth()->user()->img_url ?? null;
+                                @endphp
+
+                                @if ($avatar)
+                                    @php
+                                        $src = \Illuminate\Support\Str::startsWith($avatar, ['http://', 'https://', '/']) ? $avatar : asset($avatar);
+                                    @endphp
+                                    <img src="{{ $src }}" alt="Avatar" class="w-8 h-8 rounded-full object-cover">
+                                @else
+                                    <i data-lucide="user" class="w-4 h-4"></i>
+                                @endif
                             </button>
 
                             <div x-show="open" @click.away="open = false"

@@ -8,7 +8,10 @@ use App\Models\Question; // Assuming you have Question model
 use App\Models\Feedback; // Assuming you have Feedback model
 use App\Models\Discount; // Assuming you have Discount model
 use App\Models\Company;  // Assuming you have Company model
+use App\Models\questionOption;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class adminController extends Controller
@@ -75,14 +78,78 @@ class adminController extends Controller
 
         return redirect()->route('admin.sections')->with('success', 'Хэсгийн мэдээллийг хадгаллаа.');
     }
+
+    public function storeQuestion(Request $request)
+    {
+        Log::info($request->toArray());
+        $request->validate([
+            'name' => 'required',
+            'img_url' => 'nullable',
+            'section_id' => 'required|exists:sections,id',
+            'is_active' => 'nullable|boolean',
+            'correct_answer' => 'required',
+            'why_correct' => 'nullable|string',
+            'options' => 'required|array|min:2',
+            'options.*' => 'required|string|max:255'
+        ]);
+
+        $section = Section::find($request->section_id);
+        if (!$section) {
+            return redirect()->back()->with('error', 'Сонгосон хэсэг олдсонгүй.');
+        }
+
+        // Start database transaction
+        DB::beginTransaction();
+
+        try {
+            // First create the question with all required fields
+            $question = Question::create([
+                'name' => $request->name,
+                'section_id' => $request->section_id,
+                'img_url' => $request->img_url,
+                'is_active' => $request->has('is_active') ? 1 : 0,
+                'why_correct' => $request->why_correct,
+                'created_userid' => Auth::id()
+                // answer_id will be set after creating the option
+            ]);
+
+            // Create all options and track the correct one
+            foreach ($request->options as $index => $optionText) {
+                $isCorrect = $index == $request->correct_answer;
+                $option = questionOption::create([
+                    'question_id' => $question->id,
+                    'option_name' => $optionText,
+                    'is_correct' => $isCorrect,
+                    'created_userid' => Auth::id()
+                ]);
+
+                // If this is the correct answer, update the question with answer_id
+                if ($isCorrect) {
+                    $question->update(['answer_id' => $option->id]);
+                }
+            }
+
+            // All options are now created in the previous loop
+
+            DB::commit();
+            return redirect()->route('admin.sections.questions', $section->id)
+                ->with('success', 'Асуултыг амжилттай хадгаллаа.');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Асуулт хадгалахад алдаа гарлаа: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Алдаа гарлаа. Дахин оролдоно уу.');
+        }
+    }
     public function questions()
     {
         $sections = Section::all();
-        $questions = Question::with(['section', 'answers'])
+        $questions = Question::with(['section', 'options'])
             ->latest()
             ->paginate(15);
-        Log::info($questions);
-        return view("admin.questions.index", compact('questions','sections'));
+        return view("admin.questions.index", compact('questions', 'sections'));
     }
     public function questionsItem($id)
     {
@@ -110,9 +177,4 @@ class adminController extends Controller
         return view("admin.company.index", compact('companies'));
     }
 
-    public function newQuestion()
-    {
-        $sections = Section::all();
-        return view("admin.questions.create", compact('sections'));
-    }
 }

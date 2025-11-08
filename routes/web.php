@@ -67,7 +67,7 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
     Route::get('/sections/delete/{id}', [adminController::class, 'destroySection'])->name('admin.sections.destroy');
     Route::get('/questions', [adminController::class, 'questions'])->name('admin.questions');
     Route::get('/questions/{id}', [adminController::class, 'questionsItem'])->name('admin.questions.item');
-    Route::get('/questions/new', [adminController::class, 'newQuestion'])->name('admin.questions.new');
+    Route::post('/questions/store', [adminController::class, 'storeQuestion'])->name('admin.questions.new');
     Route::post('/questions', [adminController::class, 'storeQuestion'])->name('admin.questions.store');
     Route::get('/feedback', [adminController::class, 'feedback'])->name('admin.feedback');
     Route::get('/discounts', [adminController::class, 'discount'])->name('admin.discount');

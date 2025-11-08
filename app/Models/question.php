@@ -26,6 +26,10 @@ class question extends Model
     }
     public function answer()
     {
-        return $this->belongsTo(questionOption::class, 'answer_id','id');
+        return $this->belongsTo(questionOption::class, 'answer_id', 'id');
+    }
+    public function options()
+    {
+        return $this->belongsTo(questionOption::class, 'question_id', 'id');
     }
 }

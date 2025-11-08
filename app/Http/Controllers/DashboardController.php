@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\section;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -66,6 +67,7 @@ class DashboardController extends Controller
     }
     public function sections()
     {
+        $datas = section::with('questions')->where('is_active', true)->get();
         $sections = [
             [
                 'id'=> 1,
@@ -79,7 +81,7 @@ class DashboardController extends Controller
                 'difficulty'=> 'Easy',
             ],
         ];
-        return view('sections.sections', compact('sections'));
+        return view('sections.sections', compact('sections','datas'));
     }
     public function sectionsItem($id){
         return view('sections.item', compact('id'));

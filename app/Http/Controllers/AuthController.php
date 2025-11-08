@@ -40,7 +40,9 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-
+            $user = auth()->user();
+            $user->mac_address = $request->userIp;
+            $user->save();
             return redirect()->intended(route('dashboard'));
         }
 
