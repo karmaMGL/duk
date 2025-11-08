@@ -9,13 +9,13 @@ use App\Models\Feedback; // Assuming you have Feedback model
 use App\Models\Discount; // Assuming you have Discount model
 use App\Models\Company;  // Assuming you have Company model
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class adminController extends Controller
 {
     //
     public function index()
     {
-        return view('welcome');
 
         $stats = [
             'sections' => Section::all()->count(),
@@ -77,11 +77,12 @@ class adminController extends Controller
     }
     public function questions()
     {
+        $sections = Section::all();
         $questions = Question::with(['section', 'answers'])
             ->latest()
             ->paginate(15);
-
-        return view("admin.questions.index", compact('questions'));
+        Log::info($questions);
+        return view("admin.questions.index", compact('questions','sections'));
     }
     public function questionsItem($id)
     {

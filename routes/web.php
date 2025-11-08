@@ -31,12 +31,8 @@ Route::post('auth/logout', [AuthController::class, 'logout'])
 
 Route::post('admin/logout', [AuthController::class, 'adminLogout'])
     ->name('auth.admin.logout');
+Route::get('admin   /dashboard', [adminController::class, 'index'])->name('admin.dashboard');
 
-// Admin Protected Routes
-Route::prefix('admin')->middleware('auth:admin')->group(function () {
-    Route::get('/dashboard', [adminController::class, 'index'])->name('admin.dashboard');
-    // Add other admin routes here
-});
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
@@ -62,24 +58,22 @@ Route::middleware('auth')->group(function () {
     // User Settings
     Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
 });
-Route::middleware('auth')->group(function () {
-    Route::prefix('admin')->group(function () {
-        Route::get('/dashboard', [adminController::class, 'index'])->name('admin.dashboard');
-        Route::get('/sections', [adminController::class, 'sections'])->name('admin.sections');
-        Route::get('/sections/{id}', [adminController::class, 'sectionsItem'])->name('admin.sections.item');
+Route::prefix('admin')->middleware('auth:admin')->group(function () {
+    Route::get('/dashboard', [adminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/sections', [adminController::class, 'sections'])->name('admin.sections');
+    Route::get('/sections/{id}', [adminController::class, 'sectionsItem'])->name('admin.sections.item');
 
-        Route::post('/sections', [adminController::class, 'storeSection'])->name('admin.sections.store');
-        Route::get('/sections/delete/{id}', [adminController::class, 'destroySection'])->name('admin.sections.destroy');
-        Route::get('/questions', [adminController::class, 'questions'])->name('admin.questions');
-        Route::get('/questions/{id}', [adminController::class, 'questionsItem'])->name('admin.questions.item');
-        Route::get('/questions/new', [adminController::class, 'newQuestion'])->name('admin.questions.new');
-        Route::post('/questions', [adminController::class, 'storeQuestion'])->name('admin.questions.store');
-        Route::get('/feedback', [adminController::class, 'feedback'])->name('admin.feedback');
-        Route::get('/discounts', [adminController::class, 'discount'])->name('admin.discount');
-        Route::get('/discounts/new', [adminController::class, 'newDiscount'])->name('admin.discounts.new');
-        Route::post('/discounts', [adminController::class, 'storeDiscount'])->name('admin.discounts.store');
-        Route::get('/companies', [adminController::class, 'company'])->name('admin.company');
-        Route::get('/companies/new', [adminController::class, 'newCompany'])->name('admin.companies.new');
-        Route::post('/companies', [adminController::class, 'storeCompany'])->name('admin.companies.store');
-    });
+    Route::post('/sections', [adminController::class, 'storeSection'])->name('admin.sections.store');
+    Route::get('/sections/delete/{id}', [adminController::class, 'destroySection'])->name('admin.sections.destroy');
+    Route::get('/questions', [adminController::class, 'questions'])->name('admin.questions');
+    Route::get('/questions/{id}', [adminController::class, 'questionsItem'])->name('admin.questions.item');
+    Route::get('/questions/new', [adminController::class, 'newQuestion'])->name('admin.questions.new');
+    Route::post('/questions', [adminController::class, 'storeQuestion'])->name('admin.questions.store');
+    Route::get('/feedback', [adminController::class, 'feedback'])->name('admin.feedback');
+    Route::get('/discounts', [adminController::class, 'discount'])->name('admin.discount');
+    Route::get('/discounts/new', [adminController::class, 'newDiscount'])->name('admin.discounts.new');
+    Route::post('/discounts', [adminController::class, 'storeDiscount'])->name('admin.discounts.store');
+    Route::get('/companies', [adminController::class, 'company'])->name('admin.company');
+    Route::get('/companies/new', [adminController::class, 'newCompany'])->name('admin.companies.new');
+    Route::post('/companies', [adminController::class, 'storeCompany'])->name('admin.companies.store');
 });
