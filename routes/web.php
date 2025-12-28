@@ -70,7 +70,9 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
     Route::get('/questions', [adminController::class, 'questions'])->name('admin.questions');
     Route::get('/questions/{id}', [adminController::class, 'questionsItem'])->name('admin.questions.item');
     Route::post('/questions/store', [adminController::class, 'storeQuestion'])->name('admin.questions.new');
+    Route::get('/questions/update/{id}', [adminController::class, 'storeUpdateQuestion'])->name('admin.questions.update');
     Route::post('/questions', [adminController::class, 'storeQuestion'])->name('admin.questions.store');
+    Route::delete('/questions/delete/{id}', [adminController::class, 'destroyQuestion'])->name('admin.questions.destroy');
     Route::get('/feedback', [adminController::class, 'feedback'])->name('admin.feedback');
     Route::get('/discounts', [adminController::class, 'discount'])->name('admin.discount');
     Route::get('/discounts/new', [adminController::class, 'newDiscount'])->name('admin.discounts.new');

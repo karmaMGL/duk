@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\records;
 use Illuminate\Http\Request;
 use App\Models\Section;  // Assuming you have Section model
 use App\Models\Question; // Assuming you have Question model
@@ -178,6 +179,65 @@ class adminController extends Controller
                 ->with('error', 'Алдаа гарлаа. Дахин оролдоно уу.');
         }
     }
+    public function storeUpdateQuestion(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'section_id' => 'required|exists:sections,id',
+            'is_active' => 'boolean',
+            'why_correct' => 'nullable|string',
+            'options' => 'required|array|min:2',
+            'options.*.id' => 'sometimes|exists:question_options,id',
+            'options.*.option_text' => 'required|string|max:255',
+            'answer_id' => 'required|exists:question_options,id'
+        ]);
+
+        // Start transaction to ensure data consistency
+        DB::beginTransaction();
+
+        try {
+            // Update the question
+            $question = Question::findOrFail($id);
+            $question->update([
+                'name' => $validated['name'],
+                'section_id' => $validated['section_id'],
+                'is_active' => $request->has('is_active'),
+                'why_correct' => $validated['why_correct'] ?? null,
+                'answer_id' => $validated['answer_id'],
+                'updated_userid' => auth()->id()
+            ]);
+
+            $optionIds = [];
+            // Update or create options
+            foreach ($request->options as $optionData) {
+                if (isset($optionData['id'])) {
+                    // Update existing option
+                    $option = $question->options()->findOrFail($optionData['id']);
+                    $option->update([
+                        'option_text' => $optionData['option_text']
+                    ]);
+                    $optionIds[] = $option->id;
+                } else {
+                    // Create new option
+                    $newOption = $question->options()->create([
+                        'option_text' => $optionData['option_text']
+                    ]);
+                    $optionIds[] = $newOption->id;
+                }
+            }
+
+            // Delete options that were removed
+            $question->options()->whereNotIn('id', $optionIds)->delete();
+
+            DB::commit();
+            return redirect()->route('admin.questions.index')
+                ->with('success', 'Question updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withInput()
+                ->with('error', 'Error updating question: ' . $e->getMessage());
+        }
+    }
     public function questions(Request $request)
     {
         $quary = Section::with('questions')->where('is_active', true);
@@ -188,6 +248,14 @@ class adminController extends Controller
         }
         $sections = $quary->get();
         return view("admin.questions.index", compact('sections'));
+    }
+    public function destroyQuestion($id)
+    {
+        Question::destroy($id);
+        questionOption::where('question_id', $id)->delete();
+        records::where('question_id', $id)->delete();
+        return redirect()->back()
+            ->with('success', 'Амжилттай устгасан');
     }
     public function questionsItem($id)
     {

@@ -7,6 +7,9 @@
     <title>@yield('title', 'DriveTest Pro - Master Your Driving Test')</title>
     <meta name="description" content="Comprehensive driving test preparation platform">
 
+    @yield('browser-tab-icon', '<link rel="icon" href="/logo.svg" type="image/svg+xml">')
+
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -112,9 +115,16 @@
 
                                 @if ($avatar)
                                     @php
-                                        $src = \Illuminate\Support\Str::startsWith($avatar, ['http://', 'https://', '/']) ? $avatar : asset($avatar);
+                                        $src = \Illuminate\Support\Str::startsWith($avatar, [
+                                            'http://',
+                                            'https://',
+                                            '/',
+                                        ])
+                                            ? $avatar
+                                            : asset($avatar);
                                     @endphp
-                                    <img src="{{ $src }}" alt="Avatar" class="w-8 h-8 rounded-full object-cover">
+                                    <img src="{{ $src }}" alt="Avatar"
+                                        class="w-8 h-8 rounded-full object-cover">
                                 @else
                                     <i data-lucide="user" class="w-4 h-4"></i>
                                 @endif
@@ -188,17 +198,17 @@
                         <nav class="flex-1 px-4 py-6 space-y-2">
                             @php
                                 $navItems = [
-                                    ['href' => '/admin/dashboard', 'label' => 'Dashboard'],
-                                    ['href' => '/admin/sections', 'label' => 'Sections'],
-                                    ['href' => '/admin/questions', 'label' => 'Questions'],
-                                    ['href' => '/admin/static-exams', 'label' => 'Static Exams'],
-                                    ['href' => '/admin/road-signs', 'label' => 'Road Signs'],
-                                    ['href' => '/admin/users', 'label' => 'Users'],
-                                    ['href' => '/admin/companies', 'label' => 'Companies'],
-                                    ['href' => '/admin/discounts', 'label' => 'Discounts'],
-                                    ['href' => '/admin/feedback', 'label' => 'Feedback'],
-                                    ['href' => '/admin/pricing', 'label' => 'Pricing'],
-                                    ['href' => '/admin/reports', 'label' => 'Reports'],
+                                    ['href' => '/admin/dashboard', 'label' => 'Хяналтын самбар'],
+                                    ['href' => '/admin/sections', 'label' => 'Хэсэгүүд'],
+                                    ['href' => '/admin/questions', 'label' => 'Асуултууд'],
+                                    ['href' => '/admin/static-exams', 'label' => 'Статик харилцан'],
+                                    ['href' => '/admin/road-signs', 'label' => 'Замын тэмдэг'],
+                                    ['href' => '/admin/users', 'label' => 'Хэрэглэгчүүлүүлэг'],
+                                    ['href' => '/admin/companies', 'label' => 'Компанийн мэдээллүүлэг'],
+                                    ['href' => '/admin/discounts', 'label' => 'Хөтөлбөрлөлт'],
+                                    ['href' => '/admin/feedback', 'label' => 'Санал хүсэлт'],
+                                    ['href' => '/admin/pricing', 'label' => 'Үнэ'],
+                                    ['href' => '/admin/reports', 'label' => 'Report'],
                                 ];
                             @endphp
 
