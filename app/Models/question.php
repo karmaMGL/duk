@@ -30,6 +30,6 @@ class question extends Model
     }
     public function options()
     {
-        return $this->belongsTo(questionOption::class, 'question_id', 'id');
+        return $this->hasMany(questionOption::class, 'question_id', 'id');
     }
 }

@@ -36,7 +36,7 @@ class adminController extends Controller
     {
 
         $sections = Section::withCount('questions')->latest()->paginate(10);
-        if ($request->search) {
+        if ($request->filled('search')) {
             $sections = Section::withCount('questions')->where('name', 'like', '%' . $request->search . '%')->latest()->paginate(10);
         }
         $view = view("admin.sections.index", compact('sections'));
@@ -66,9 +66,15 @@ class adminController extends Controller
             'number' => 'required',
             'status' => 'required',
         ]);
-        if (Section::where('section_number', $request->number)->where('is_active', true)->exists()) {
-            return redirect()->route('admin.sections')->with('error', 'Хэсгийн дугаар аль хэдийн байна.');
+
+        // Check if section number already exists and is active
+        if (Section::where('section_number', $request->number)
+            ->where('is_active', true)
+            ->where('id', '!=', $request->id)
+            ->exists()) {
+            return redirect()->back()->with('error', 'Хэсгийн дугаар аль хэдийн байна.');
         }
+
         Section::create([
             'name' => $request->name,
             'section_number' => $request->number,
@@ -77,6 +83,34 @@ class adminController extends Controller
         ]);
 
         return redirect()->route('admin.sections')->with('success', 'Хэсгийн мэдээллийг хадгаллаа.');
+    }
+
+    public function updateSection(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required',
+            'number' => 'required',
+            'status' => 'required',
+        ]);
+
+        $section = Section::findOrFail($id);
+
+        // Check if section number already exists and is active, excluding current section
+        if (Section::where('section_number', $request->number)
+            ->where('is_active', true)
+            ->where('id', '!=', $id)
+            ->exists()) {
+            return redirect()->back()->with('error', 'Хэсгийн дугаар аль хэдийн байна.');
+        }
+
+        $section->update([
+            'name' => $request->name,
+            'section_number' => $request->number,
+            'is_active' => $request->status === 'true' ? 1 : 0,
+            'updated_userid' => auth()->user()->id,
+        ]);
+
+        return redirect()->route('admin.sections')->with('success', 'Хэсгийн мэдээлэл амжилттай шинэчлэгдлээ.');
     }
 
     public function storeQuestion(Request $request)

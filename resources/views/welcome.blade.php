@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>DriveTest Pro</title>
+    <title>Жолооны Тест Про</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -20,15 +20,15 @@
                 <span class="text-xl font-bold text-gray-900">DriveTest Pro</span>
             </div>
             <nav class="hidden md:flex items-center space-x-8">
-                <a href="#features" class="text-gray-600 hover:text-gray-900 transition-colors">Features</a>
-                <a href="#pricing" class="text-gray-600 hover:text-gray-900 transition-colors">Pricing</a>
-                <a href="#testimonials" class="text-gray-600 hover:text-gray-900 transition-colors">Reviews</a>
+                <a href="#features" class="text-gray-600 hover:text-gray-900 transition-colors">Онцлогууд</a>
+                <a href="#pricing" class="text-gray-600 hover:text-gray-900 transition-colors">Үнийн санал</a>
+                <a href="#testimonials" class="text-gray-600 hover:text-gray-900 transition-colors">Үнэлгээ</a>
                 @guest
-                    <a href="{{ route('auth.login') }}" class="btn btn-outline btn-sm">Sign In</a>
-                    <a href="{{ route('auth.register.page') }}" class="btn btn-primary btn-sm">Get Started</a>
+                    <a href="{{ route('auth.login') }}" class="btn btn-outline btn-sm">Нэвтрэх</a>
+                    <a href="{{ route('auth.register.page') }}" class="btn btn-primary btn-sm">Эхлэх</a>
                 @endguest
                 @auth
-                    <a href="{{ route('auth.dashboard') }}" class="btn btn-primary btn-sm">Dashboard</a>
+                    <a href="{{ route('auth.dashboard') }}" class="btn btn-primary btn-sm">Хянах самбар</a>
                 @endauth
             </nav>
         </div>
@@ -38,49 +38,48 @@
     <section class="py-20 px-4">
         <div class="container mx-auto text-center max-w-4xl">
             <div class="badge badge-secondary mb-4">
-                🚗 #1 Driving Test Preparation Platform
+                🚗 #1 Жолооны тест бэлтгэх платформ
             </div>
             <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Pass Your Driving Test
-                <span class="text-blue-600"> First Time</span>
+                Анхны оролдлогоороо
+                <span class="text-blue-600"> Жолооны тестээ тэнцээрэй</span>
             </h1>
             <p class="text-xl text-gray-600 mb-8 leading-relaxed">
-                Master your driving knowledge with our comprehensive question bank, practice exams, and road sign
-                recognition system. Join thousands who've passed with confidence.
+                Манай өргөн хүрээний асуултын сан, дадлагын шалгалтууд, замын тэмдэг таних системийг ашиглан жолоодлогын мэдлэгээ сайжруул. Өөртөө итгэлтэйгээр тестээ тэнцсэн мянга мянган хүмүүст нэгдээрэй.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <a href="{{ route('auth.register') }}" class="btn btn-primary text-lg px-8 py-6">
-                    Start Free Trial
+                    Үнэгүй туршах
                     <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
                 </a>
                 <a href="#demo" class="btn btn-outline text-lg px-8 py-6 bg-transparent">
-                    View Demo
+                    Демо үзэх
                 </a>
             </div>
             <div class="flex flex-wrap items-center justify-center gap-8 text-sm text-gray-500">
                 <div class="flex items-center">
                     <i data-lucide="users" class="w-4 h-4 mr-2"></i>
-                    50,000+ Students
+                    50,000+ Суралцагч
                 </div>
                 <div class="flex items-center">
                     <i data-lucide="trophy" class="w-4 h-4 mr-2"></i>
-                    95% Pass Rate
+                    95% Тэнцэлт
                 </div>
                 <div class="flex items-center">
                     <i data-lucide="star" class="w-4 h-4 mr-2"></i>
-                    4.9/5 Rating
+                    4.9/5 Үнэлгээ
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
+    <!-- Онцлогууд Section -->
     <section id="features" class="py-20 px-4 bg-gray-50">
         <div class="container mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Everything You Need to Pass</h2>
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Танд хэрэгтэй бүх зүйл</h2>
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                    Our comprehensive platform covers all aspects of driving test preparation
+                    Манай цогц платформ нь жолооны тест бэлтгэх бүх талыг хамаарна
                 </p>
             </div>
 
@@ -88,9 +87,9 @@
                 <div class="card border-0 shadow-lg hover:shadow-xl transition-shadow">
                     <div class="card-body">
                         <i data-lucide="book-open" class="w-12 h-12 text-blue-600 mb-4"></i>
-                        <h3 class="card-title text-xl font-semibold mb-2">Comprehensive Question Bank</h3>
+                        <h3 class="card-title text-xl font-semibold mb-2">Өргөн хүрээний асуултын сан</h3>
                         <p class="text-gray-600">
-                            Access thousands of practice questions organized by sections with detailed explanations
+                            Дэлгэрэнгүй тайлбар бүхий хэсгүүдээр ангилсан мянга мянган дадлагын асуултуудад хандах
                         </p>
                     </div>
                 </div>
@@ -148,18 +147,18 @@
         </div>
     </section>
 
-    <!-- Pricing Section -->
+    <!-- Үнийн санал Section -->
     <section id="pricing" class="py-20 px-4">
         <div class="container mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Choose Your Plan</h2>
-                <p class="text-xl text-gray-600">Flexible pricing options to fit your learning needs</p>
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Өөрийн төлөвлөгөөг сонгоно уу</h2>
+                <p class="text-xl text-gray-600">Таны сурах хэрэгцээнд тохирсон уян хатан үнийн сонголтууд</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                 <div class="card border-2 hover:border-blue-200 transition-colors">
                     <div class="card-body text-center">
-                        <h3 class="card-title text-2xl">Basic</h3>
+                        <h3 class="card-title text-2xl">Энгийн</h3>
                         <div class="text-4xl font-bold text-gray-900 mt-4">
                             $19<span class="text-lg text-gray-500">/month</span>
                         </div>
@@ -171,13 +170,13 @@
                             </div>
                             <div class="flex items-center">
                                 <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mr-3"></i>
-                                <span>Basic Progress Tracking</span>
+                                <span>Энгийн Progress Tracking</span>
                             </div>
                             <div class="flex items-center">
                                 <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mr-3"></i>
                                 <span>Road Sign Database</span>
                             </div>
-                            <a href="{{ route('auth.register.page') }}" class="btn btn-primary w-full mt-6">Get Started</a>
+                            <a href="{{ route('auth.register.page') }}" class="btn btn-primary w-full mt-6">Эхлэх</a>
                         </div>
                     </div>
                 </div>
@@ -211,14 +210,14 @@
                                 <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mr-3"></i>
                                 <span>Priority Support</span>
                             </div>
-                            <a href="{{ route('auth.register.page') }}" class="btn btn-primary w-full mt-6">Start Free Trial</a>
+                            <a href="{{ route('auth.register.page') }}" class="btn btn-primary w-full mt-6">Үнэгүй туршах</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="card border-2 hover:border-purple-200 transition-colors">
                     <div class="card-body text-center">
-                        <h3 class="card-title text-2xl">Premium</h3>
+                        <h3 class="card-title text-2xl">Дээд зэрэглэл</h3>
                         <div class="text-4xl font-bold text-gray-900 mt-4">
                             $59<span class="text-lg text-gray-500">/month</span>
                         </div>
@@ -330,9 +329,9 @@
     <!-- CTA Section -->
     <section class="py-20 px-4 bg-blue-600">
         <div class="container mx-auto text-center">
-            <h2 class="text-4xl font-bold text-white mb-4">Ready to Pass Your Driving Test?</h2>
+            <h2 class="text-4xl font-bold text-white mb-4">Жолооны тестээ тэнцэхэд бэлэн үү?</h2>
             <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-                Join thousands of successful students and start your journey to becoming a confident driver today.
+                Амжилттай суралцагчдын тоонд нэгдэж, өнөөдрөөс эхлэн итгэлтэй жолооч болох аялалаа эхлүүлээрэй.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{{ route('auth.register.page') }}" class="btn btn-secondary text-lg px-8 py-6">
@@ -364,12 +363,12 @@
                     <ul class="space-y-2 text-gray-400">
                         <li>
                             <a href="#features" class="hover:text-white transition-colors">
-                                Features
+                                Онцлогууд
                             </a>
                         </li>
                         <li>
                             <a href="#pricing" class="hover:text-white transition-colors">
-                                Pricing
+                                Үнийн санал
                             </a>
                         </li>
                         <li>

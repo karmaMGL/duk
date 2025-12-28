@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/exams/static', [DashboardController::class, 'examStatic'])->name('exams.static');
     Route::get('/sections', [DashboardController::class, 'sections'])->name('sections');
     Route::get('/sections/{id}', [DashboardController::class, 'sectionsItem'])->name('sections.item');
+    Route::post('/sections/submit', [DashboardController::class, 'sectionsSubmit'])->name('sections.question.submit');
     // Study Guide
     Route::get('/study-guide', [DashboardController::class, 'studyGuide'])->name('study-guide');
 
@@ -64,6 +65,7 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
     Route::get('/sections/{id}', [adminController::class, 'sectionsItem'])->name('admin.sections.item');
 
     Route::post('/sections', [adminController::class, 'storeSection'])->name('admin.sections.store');
+    Route::put('/sections/{id}', [adminController::class, 'updateSection'])->name('admin.sections.update');
     Route::get('/sections/delete/{id}', [adminController::class, 'destroySection'])->name('admin.sections.destroy');
     Route::get('/questions', [adminController::class, 'questions'])->name('admin.questions');
     Route::get('/questions/{id}', [adminController::class, 'questionsItem'])->name('admin.questions.item');

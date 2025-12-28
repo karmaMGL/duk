@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\question;
+use App\Models\records;
 use App\Models\section;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -84,7 +86,28 @@ class DashboardController extends Controller
         return view('sections.sections', compact('sections','datas'));
     }
     public function sectionsItem($id){
-        return view('sections.item', compact('id'));
+        $data = section::with('questions.options')->where('id',$id)->first();
+        return view('sections.item', compact('id','data'));
+    }
+    public function sectionsSubmit(Request $request){
+        $request->validate([
+            'question_id' => 'required',
+            'section_id' => 'required',
+            'selected_option_id' => 'required',
+        ]);
+        $question = question::find($request->question_id);
+        $is_correct = $question->options()->where('id',$request->selected_option_id)->first()->is_correct;
+        $record = records::create([
+            'question_id' => $request->question_id,
+            'question_option_id' => $request->selected_option_id,
+            'section_id' => $request->section_id,
+            'user_id' => auth()->user()->id,
+            'is_correct' => $is_correct,
+        ]);
+        $question->update([
+            'answer_id' => $request->selected_option_id,
+        ]);
+        return redirect()->back();
     }
     /**
      * Show the user's settings page.

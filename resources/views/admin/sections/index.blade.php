@@ -32,28 +32,46 @@
                 });
             });
 
-            function showModal(id) {
-                $('#sectionId').val(id);
-                let temp = "{{ route('admin.sections.item', 'id') }}";
-                let url = temp.replace('id', id);
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    success: function(response) {
-                        // Replace the sections grid with the new content
-                        const temp = $('<div>').html(response);
-                        const newContent = $(temp).find('#sectionsGrid').html();
-                        $('#small-input-name').val(response.name);
-                        $('#small-input-number').val(response.section_number);
-                        $('#small-input-status').val(response.is_active);
-                        $('#sectionsGrid').html(newContent).removeClass('opacity-50');
-                    },
-                    error: function(xhr) {
-                        console.error('Search failed:', xhr);
-                        $('#sectionsGrid').removeClass('opacity-50');
-                    }
-                });
-                $('#dialog').show();
+            function showModal(id = null) {
+                // Reset form and set default values for new section
+                $('#sectionForm')[0].reset();
+                $('#formMethod').val('POST');
+                $('#sectionForm').attr('action', '{{ route('admin.sections.store') }}');
+                $('#formTitle').text('Шинэ хэсэг үүсгэх');
+
+                // If editing an existing section
+                if (id) {
+                    $('#formMethod').val('PUT');
+                    $('#formTitle').text('Хэсэг засах');
+
+                    let temp = "{{ route('admin.sections.item', 'id') }}";
+                    let url = temp.replace('id', id);
+
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        success: function(response) {
+                            $('#sectionIdInput').val(response.id);
+                            $('#small-input-name').val(response.name);
+                            $('#small-input-number').val(response.section_number);
+                            $('#small-input-status').val(response.is_active ? 'true' : 'false');
+
+                            // Update form action for update with proper route and ID
+                            let updateUrl = '{{ url('') }}/admin/sections/' + response.id;
+                            $('#sectionForm').attr('action', updateUrl);
+
+                            // Show the modal
+                            $('#dialog').show();
+                        },
+                        error: function(xhr) {
+                            console.error('Failed to load section:', xhr);
+                            alert('Хэсгийн мэдээлэл ачаалахад алдаа гарлаа.');
+                        }
+                    });
+                } else {
+                    // For new section, just show the modal
+                    $('#dialog').show();
+                }
             }
         </script>
     @endpush
@@ -74,7 +92,7 @@
                 <input type="text" id="search" placeholder="Хайлтын хэсгүүд..."
                     class="pl-10 py-2 w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 h-10" />
             </div>
-            <button command="show-modal" commandfor="dialog"
+            <button type="button" onclick="showModal()"
                 class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path d="M12 4v16m8-8H4" />
@@ -94,8 +112,11 @@
                     class="flex min-h-full items-end justify-center p-4 text-center focus:outline-none sm:items-center sm:p-0">
                     <el-dialog-panel
                         class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95">
-                        <form action="{{ route('admin.sections.store') }}" method="POST">
+                        <form id="sectionForm" action="{{ route('admin.sections.store') }}" method="POST">
                             @csrf
+                            @method('POST')
+                            <input type="hidden" name="_method" id="formMethod" value="POST">
+                            <input type="hidden" name="id" id="sectionIdInput">
                             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 w-full">
                                 <div class="flex items-start w-full">
                                     <div class="flex-shrink-0 mr-4">
@@ -109,8 +130,8 @@
                                         </div>
                                     </div>
                                     <div class="w-full">
-                                        <h3 id="dialog-title" class="text-base font-semibold text-gray-900">Шинэ хэсэг
-                                            үүсгэх
+                                        <h3 id="dialog-title" class="text-base font-semibold text-gray-900">
+                                            <span id="formTitle">Шинэ хэсэг үүсгэх</span>
                                         </h3>
                                         <div class="mt-2 w-full">
                                             {{-- form starts here --}}
@@ -123,13 +144,20 @@
                                             </div>
                                             <div>
                                                 <label for="small-input-number"
-                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Хэсгийн
-                                                    дугаар</label>
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Хэсгийн дугаар</label>
                                                 <input type="number" name="number" id="small-input-number" inputmode="numeric"
                                                     class="w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-200 dark:border-gray-100 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-100 dark:focus:border-blue-100"
                                                     required>
                                             </div>
-                                            <br>
+                                            <div>
+                                                <label for="small-input-status"
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Төлөв</label>
+                                                <select id="small-input-status" name="status"
+                                                    class="w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-200 dark:border-gray-100 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-100 dark:focus:border-blue-100">
+                                                    <option value="true">Идэвхтэй</option>
+                                                    <option value="false">Идэвхгүй</option>
+                                                </select>
+                                            </div>
                                             <label class="inline-flex items-center cursor-pointer">
                                                 <input type="checkbox" id="small-input-status" name="status" value=true class="sr-only peer"
                                                     checked>
