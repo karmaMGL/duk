@@ -168,7 +168,7 @@ class adminController extends Controller
             // All options are now created in the previous loop
 
             DB::commit();
-            return redirect()->route('admin.sections.questions', $section->id)
+            return redirect()->back()
                 ->with('success', 'Асуултыг амжилттай хадгаллаа.');
         } catch (\Exception $e) {
             DB::rollback();

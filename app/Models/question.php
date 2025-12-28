@@ -20,6 +20,9 @@ class question extends Model
         'created_at',
         'updated_at',
     ];
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
     public function section()
     {
         return $this->belongsTo(section::class);

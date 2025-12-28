@@ -191,7 +191,13 @@
 
 
     @foreach ($sections as $section)
+        @php
+            $numbers = 0;
+        @endphp
         @foreach ($section->questions as $question)
+            @php
+                $numbers++;
+            @endphp
             <div class="px-4 sm:px-6 lg:px-8 space-y-4">
                 <div class="border rounded-lg shadow-sm bg-white p-6">
                     <div class="flex items-start justify-between">
@@ -204,10 +210,14 @@
                                     <line x1="12" y1="8" x2="12.01" y2="8" />
                                 </svg>
                                 <span class="text-xs border px-2 py-0.5 rounded">Traffic Laws</span>
-                                <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded">Идэвхтэй</span>
+                                @if($question->is_active)
+                                <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded"> Идэвхтэй </span>
+                                @else
+                                <span class="text-xs bg-red-100 text-red-800 px-2 py-0.5 rounded"> Идэвхгүй </span>
+                                @endif
                             </div>
 
-                            <h3 class="text-lg font-medium text-gray-900 mb-3">{{ $question->name }}</h3>
+                            <h3 class="text-lg font-medium text-gray-900 mb-3">{{ $numbers }}. {{ $question->name }}</h3>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3 text-sm">
                                 @foreach ($question->options as $option)

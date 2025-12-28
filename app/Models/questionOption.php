@@ -11,8 +11,12 @@ class questionOption extends Model
     protected $fillable = [
         'question_id',
         'option_name',
+        'is_correct',
         'created_userid',
         'updated_userid',
+    ];
+    protected $casts = [
+        'is_correct' => 'boolean',
     ];
     public function question()
     {
