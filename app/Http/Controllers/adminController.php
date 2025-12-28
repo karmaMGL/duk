@@ -71,7 +71,8 @@ class adminController extends Controller
         if (Section::where('section_number', $request->number)
             ->where('is_active', true)
             ->where('id', '!=', $request->id)
-            ->exists()) {
+            ->exists()
+        ) {
             return redirect()->back()->with('error', 'Хэсгийн дугаар аль хэдийн байна.');
         }
 
@@ -99,7 +100,8 @@ class adminController extends Controller
         if (Section::where('section_number', $request->number)
             ->where('is_active', true)
             ->where('id', '!=', $id)
-            ->exists()) {
+            ->exists()
+        ) {
             return redirect()->back()->with('error', 'Хэсгийн дугаар аль хэдийн байна.');
         }
 
@@ -168,7 +170,6 @@ class adminController extends Controller
             DB::commit();
             return redirect()->route('admin.sections.questions', $section->id)
                 ->with('success', 'Асуултыг амжилттай хадгаллаа.');
-
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('Асуулт хадгалахад алдаа гарлаа: ' . $e->getMessage());
@@ -177,16 +178,20 @@ class adminController extends Controller
                 ->with('error', 'Алдаа гарлаа. Дахин оролдоно уу.');
         }
     }
-    public function questions()
+    public function questions(Request $request)
     {
-        $sections = Section::all();
-        $questions = Question::with(['section', 'options'])
-            ->latest()
-            ->paginate(15);
-        return view("admin.questions.index", compact('questions', 'sections'));
+        $quary = Section::with('questions')->where('is_active', true);
+        if ($request->filled('search')) {
+            $quary->where('name', 'like', '%' . $request->search . '%')->orWhereHas('questions', function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->search . '%');
+            });
+        }
+        $sections = $quary->get();
+        return view("admin.questions.index", compact('sections'));
     }
     public function questionsItem($id)
     {
+
         return view("admin.questions.item");
     }
     public function feedback()
@@ -210,5 +215,4 @@ class adminController extends Controller
 
         return view("admin.company.index", compact('companies'));
     }
-
 }

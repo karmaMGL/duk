@@ -32,12 +32,17 @@
                 });
             });
 
+            function closeModal() {
+                $('#dialog').hide();
+            }
+
             function showModal(id = null) {
                 // Reset form and set default values for new section
                 $('#sectionForm')[0].reset();
                 $('#formMethod').val('POST');
                 $('#sectionForm').attr('action', '{{ route('admin.sections.store') }}');
                 $('#formTitle').text('Шинэ хэсэг үүсгэх');
+                $('#dialog').show();
 
                 // If editing an existing section
                 if (id) {
@@ -60,8 +65,6 @@
                             let updateUrl = '{{ url('') }}/admin/sections/' + response.id;
                             $('#sectionForm').attr('action', updateUrl);
 
-                            // Show the modal
-                            $('#dialog').show();
                         },
                         error: function(xhr) {
                             console.error('Failed to load section:', xhr);
@@ -69,8 +72,7 @@
                         }
                     });
                 } else {
-                    // For new section, just show the modal
-                    $('#dialog').show();
+                    // For new section, the modal is already shown
                 }
             }
         </script>
@@ -174,10 +176,10 @@
                                 </div>
                             </div>
                             <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                <button type="submit" command="close" commandfor="dialog"
-                                    class="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-500 sm:ml-3 sm:w-auto">Үүсгэх</button>
-                                <button type="button" command="close" commandfor="dialog"
-                                    class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+                                <button type="submit"
+                                    class="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-500 sm:ml-3 sm:w-auto">Хадгалах</button>
+                                <button type="button" onclick="closeModal()"
+                                    class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Цуцлах</button>
                             </div>
                         </form>
                     </el-dialog-panel>
@@ -186,6 +188,7 @@
         </el-dialog>
         <!-- Sections Grid -->
 
+        <!-- Sections Grid -->
         <div id="sectionsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-200">
             <!-- Section Card -->
             @if ($sections->count() === 0)
@@ -220,13 +223,30 @@
                                 <span>Үүсгэсэн огноо:</span>
                                 <span class="font-medium">{{ $section->created_at }}</span>
                             </div>
-                            <div class="pt-4 flex gap-2">
-                                <button
-                                    class="px-3 py-1 text-sm border rounded hover:bg-gray-100">{{ $section->is_active ? 'Идэвхжүүлэх' : 'Идэвхгүй' }}</button>
-                                <button command="show-modal" commandfor="dialog" onclick="showModal({{ $section->id }})"
-                                    class="px-3 py-1 text-sm border rounded hover:bg-gray-100">Засварлах</button>
+                            <div class="pt-4 flex flex-wrap gap-2">
+                                <a href="{{ route('admin.questions', ['section_id' => $section->id]) }}"
+                                    class="px-3 py-1 text-sm border rounded hover:bg-gray-100 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    Асуултууд
+                                </a>
+                                <button onclick="showModal({{ $section->id }})"
+                                    class="px-3 py-1 text-sm border rounded hover:bg-gray-100 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Засварлах
+                                </button>
                                 <a href="{{ route('admin.sections.destroy', $section->id) }}"
-                                    class="px-3 py-1 text-sm border rounded text-red-600 hover:text-red-700">Устгах</a>
+                                    class="px-3 py-1 text-sm border rounded text-red-600 hover:bg-red-50 flex items-center"
+                                    onclick="return confirm('Та энэ хэсгийг устгахдаа итгэлтэй байна уу? Энэ хэсэгт байгаа бүх асуултууд устана.')">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    Устгах
+                                </a>
                             </div>
                         </div>
                     </div>
